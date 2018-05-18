@@ -27,6 +27,7 @@ require 'pp'
 require 'ostruct'
 require 'logger'
 
+$stdout.sync = true
 $log = Logger.new(STDOUT)
 $conf = OpenStruct.new
 
