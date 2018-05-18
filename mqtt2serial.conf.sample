@@ -1,0 +1,32 @@
+;
+; mqtt2serial.conf - for supervisord configuration file
+;
+; install
+;     $ sudo apt-get install supervisor
+;     $ pwd
+;       (check your scrpt path...)
+;     $ sudo cp mqtt2serial.conf.sample /etc/supervisor/conf.d/mqtt2serial.conf
+;     $ sudo vi /etc/supervisor/conf.d/mqtt2serial.conf
+;       (fix path, etc...)
+;     $ sudo supervisorctl reread
+;     $ sudo supervisorctl add mqtt2serial
+;     $ sudo supervisorctl status
+;     mqtt2serial        RUNNING    pid 8192, uptime 0:00:30
+;
+; see also
+;     Supervisor: A Process Control System
+;     http://supervisord.org/
+;
+[program:mqtt2serial]
+command                 = /usr/bin/ruby ./mqtt2serial.rb localhost 1883 recv /dev/ttyAMA0 9600 
+directory               = /home/pi/work/mqtt-serial/
+user                    = pi
+numprocs                = 1
+autostart               = true
+autorestart             = true
+redirect_stderr         = true
+stdout_logfile          = /home/pi/work/mqtt-serial/log-mqtt2serial.txt
+startsecs               = 1
+startretries            = 10
+stdout_logfile_maxbytes = 1MB
+stdout_logfile_backups  = 1
