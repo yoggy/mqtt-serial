@@ -41,9 +41,29 @@ EOS
   exit(1)
 end
 
+def bruteforce_open(base_path)
+  sp = nil
+  idx = 0
+  begin
+    path = "#{base_path}#{idx}"
+    $log.info "open : trying...path=#{path}"
+    sp = SerialPort.new(path, $conf.bps, 8, 1, 0)
+    $log.info "open : success...path=#{path}"
+  rescue
+    sleep 0.5
+    idx += 1
+    retry if idx < 10
+  end
+  sp
+end
+
 def read_loop
   $log.info "open : serialport=#{$conf.dev}, bps=#{$conf.bps}"
-  sp = SerialPort.new($conf.dev, $conf.bps, 8, 1, 0)
+  if $conf.dev == "/dev/ttyUSB"
+    sp = bruteforce_open($conf.dev)
+  else
+    sp = SerialPort.new($conf.dev, $conf.bps, 8, 1, 0)
+  end
   buf = ""
 
   MQTT::Client.connect(:host=>$conf.host, :port=>$conf.port) do |mqtt|
